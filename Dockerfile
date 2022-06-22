@@ -13,7 +13,7 @@ RUN apt-get update \
  && apt-key adv --keyserver keyserver.ubuntu.com --recv 467B942D3A79BD29 \
  && echo "deb http://repo.mysql.com/apt/ubuntu/ bionic mysql-5.7" >> /etc/apt/sources.list
 
-FROM ubuntu:focal-20220426
+FROM ubuntu:focal-20220531
 
 LABEL maintainer="sameer@damagehead.com"
 
@@ -37,7 +37,7 @@ COPY --from=add-apt-repositories /etc/apt/sources.list.d/pgdg.list /etc/apt/sour
 
 RUN apt-get update \
  && DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y \
-      supervisor logrotate nginx mysql-client=5.7.* postgresql-client ca-certificates sudo tzdata \
+      supervisor logrotate nginx mysql-client=5.7.* postgresql-client-14 ca-certificates sudo tzdata \
       imagemagick subversion git cvs bzr mercurial darcs rsync ruby${RUBY_VERSION} locales openssh-client \
       gcc g++ make patch pkg-config gettext-base ruby${RUBY_VERSION}-dev libc6-dev zlib1g-dev libxml2-dev \
       libmysqlclient21 libpq5 libyaml-0-2 libcurl4 libssl1.1 uuid-dev xz-utils \
