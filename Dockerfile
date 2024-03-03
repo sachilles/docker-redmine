@@ -16,8 +16,12 @@ ENV REDMINE_INSTALL_DIR="${REDMINE_HOME}/redmine" \
     REDMINE_RUNTIME_ASSETS_DIR="${REDMINE_ASSETS_DIR}/runtime"
 
 RUN apt-get update \
- && DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y \
-      supervisor logrotate nginx mariadb-client postgresql-client ca-certificates sudo tzdata \
+    && DEBIAN_FRONTEND=noninteractive apt-get install -y wget gnupg2 \
+    && wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add - \
+    && echo 'deb http://apt.postgresql.org/pub/repos/apt/ bookworm-pgdg main' > /etc/apt/sources.list.d/pgdg.list \
+    && apt-get update \
+    && DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y \
+      supervisor logrotate nginx mariadb-client postgresql-client-16 ca-certificates sudo tzdata \
       imagemagick subversion git cvs bzr mercurial darcs rsync locales openssh-client \
       gcc g++ make patch pkg-config gettext-base libc6-dev zlib1g-dev libxml2-dev \
       default-libmysqlclient-dev libmariadb-dev libpq5 libyaml-0-2 libcurl4 libssl3 uuid-dev xz-utils \
