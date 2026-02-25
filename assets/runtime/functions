@@ -848,7 +848,7 @@ map_uidgid() {
     # Change permissions on all files owned by the original UID/GID to the new UID/GID
     # except for the data directory, which is expected to be managed by this docker and already has the correct permissions set
     # --max-procs and -n options are used to speed up the process by parallelizing it and processing files in batches
-    time find ${REDMINE_HOME} -path ${REDMINE_DATA_DIR}/\* -prune -o -print0 | xargs --max-procs="$(nproc)" -n 50 -0 chown -h ${REDMINE_USER}:
+    find ${REDMINE_HOME} -path ${REDMINE_DATA_DIR}/\* -prune -o -print0 | xargs --max-procs="$(nproc)" -n 50 -0 chown -h ${REDMINE_USER}:
   fi
 }
 
