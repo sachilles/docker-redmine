@@ -800,8 +800,10 @@ backup_restore_database() {
       ;;
     sqlite3)
       echo "Restoring SQLite database..."
-      gzip -dc "${config_default_backup_storage_path}/database.sql.gz" | \
-        sqlite3 "${database_production_database}"
+      exec_as_redmine mkdir -p "$(dirname "${database_production_database}")"
+      # Remove old database
+      exec_as_redmine rm -f "${database_production_database}"
+      exec_as_redmine bash -lc "gzip -dc \"${config_default_backup_storage_path}/database.sql.gz\" | sqlite3 \"${database_production_database}\""
       ;;
     *)
       echo "Database type ${database_production_adapter} not supported."
