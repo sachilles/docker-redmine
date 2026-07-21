@@ -114,13 +114,29 @@ smoke_one() {
   redmine_version=$(sed -e 's/<[^>]*>/ /g' /tmp/smoke_info.html | grep -i "redmine version" | grep -oE '[0-9]+\.[0-9]+\.[0-9]+[.a-z]*' | head -1)
   rails_version=$(sed -e 's/<[^>]*>/ /g' /tmp/smoke_info.html | grep -i "rails version"   | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | head -1)
   errs=$(grep -oE 'icon-error' /tmp/smoke_info.html | wc -l | tr -d ' ')
-  echo "   login=$login  Redmine=$redmine_version  Rails=$rails_version  icon-error=$errs (1 expected: async queue adapter)"
+
+  # Propshaft static assets (/assets/<name>-<digest>.<ext>) must be served by
+  # nginx with a long-lived immutable Cache-Control. Guards the asset-caching
+  # location regex, which silently breaks for the default relative-url-root (a
+  # missing header means the request fell through to puma instead).
+  local asset cache="no-asset"
+  asset=$(grep -oE '/assets/[^"?]+\.(css|js)' /tmp/smoke_info.html | head -1)
+  if [ -n "$asset" ]; then
+    # shellcheck disable=SC2086  # $curlk is intentionally word-split (empty or -k)
+    if curl -s $curlk -o /dev/null -D - "$url$asset" 2>/dev/null | grep -qiE '^cache-control:.*immutable'; then
+      cache="ok"
+    else
+      cache="FAIL"
+    fi
+  fi
+  echo "   login=$login  Redmine=$redmine_version  Rails=$rails_version  icon-error=$errs (1 expected: async queue adapter)  cache-control=$cache"
 
   local verdict="PASS"
   [ "$login" = "302" ] || verdict="FAIL(login=$login)"
   case "$redmine_version" in "$EXPECT_REDMINE"|"$EXPECT_REDMINE".*) ;; *) verdict="FAIL(redmine=$redmine_version want=$EXPECT_REDMINE)";; esac
+  [ "$cache" = "FAIL" ] && [ "$verdict" = "PASS" ] && verdict="FAIL(cache-control)"
   echo "   => $verdict"
-  results+=("$f|$verdict|Redmine=$redmine_version Rails=$rails_version errs=$errs")
+  results+=("$f|$verdict|Redmine=$redmine_version Rails=$rails_version errs=$errs cache=$cache")
 
   $DC down -v --remove-orphans >/dev/null 2>&1
   rm -f "$cookie"
