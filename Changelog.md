@@ -1,5 +1,8 @@
 # Changelog
 
+**7.0.1**
+- redmine: upgrade to v7.0.1 (security release) <https://www.redmine.org/news/162>
+
 **7.0.0-3**
 - entrypoint: install themes before plugins so custom theme assets survive the plugin asset recompile
 - nginx: serve Propshaft /assets/ with a long-lived immutable Cache-Control for all relative-url-roots
