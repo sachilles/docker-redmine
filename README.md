@@ -100,7 +100,7 @@ In your issue report please make sure you provide the following information:
 
 Automated builds of the image are available on [Dockerhub](https://hub.docker.com/r/sameersbn/redmine) and is the recommended method of installation.
 
-> **Note**: Builds are also available on [Quay.io](https://quay.io/repository/sameersbn/redmine)
+> **Note**: Builds are also available on [GitHub Packages](https://github.com/sameersbn/docker-redmine/pkgs/container/redmine) as `ghcr.io/sameersbn/redmine`
 
 ```bash
 docker pull sameersbn/redmine:latest
@@ -313,7 +313,7 @@ docker run --name=redmine -it --rm --link=postgresql-redmine:postgresql \
 Here the image will also automatically fetch the `DB_NAME`, `DB_USER` and `DB_PASS` variables from the postgresql container as they are specified in the `docker run` command for the postgresql container. This is made possible using the magic of docker links and works with the following images:
 
 - [postgres](https://hub.docker.com/_/postgres/)
-- [sameersbn/postgresql](https://quay.io/repository/sameersbn/postgresql/)
+- [sameersbn/postgresql](https://hub.docker.com/r/sameersbn/postgresql/)
 - [orchardup/postgresql](https://hub.docker.com/r/orchardup/postgresql/)
 - [paintedfox/postgresql](https://hub.docker.com/r/paintedfox/postgresql/)
 
@@ -957,7 +957,7 @@ make test-release # Runs the following
 - Open https://github.com/sameersbn/docker-redmine/releases and Draft new release
 - Select tag 7.0.1 and set release title to 7.0.1
 - Publish release
-- Check https://quay.io/repository/sameersbn/redmine?tab=info and https://hub.docker.com/r/sameersbn/redmine/builds for build progress
+- Check https://github.com/sameersbn/docker-redmine/actions for build progress, then confirm the tags landed on https://hub.docker.com/r/sameersbn/redmine/tags and https://github.com/sameersbn/docker-redmine/pkgs/container/redmine
 
 # References
 
